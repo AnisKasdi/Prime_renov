@@ -1564,6 +1564,7 @@
         @media (max-width: 768px) {
             .hero { height: auto; min-height: 100vh; padding: 120px 0 80px 0; }
             .hero-container { grid-template-columns: 1fr; gap: 60px; }
+            .hero-actions { flex-wrap: wrap; gap: 20px; }
             .hero-geo { height: auto; padding-top: 0; display: flex; align-items: center; justify-content: center; }
             .geo-wrap { width: min(300px, 80vw); height: 300px; }
             .nav-links {
@@ -1579,6 +1580,12 @@
 
             .nav-links.open { display: flex; }
             .nav-toggle { display: flex; }
+
+            /* Hamburger → croix quand ouvert */
+            .nav-toggle.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+            .nav-toggle.open span:nth-child(2) { opacity: 0; }
+            .nav-toggle.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
             .section { padding: 80px 5vw; }
             .projects-grid { grid-template-columns: 1fr; }
             .project-item:nth-child(1) { grid-row: span 1; }
@@ -1586,7 +1593,7 @@
             .form-row { grid-template-columns: 1fr; }
             .form-panel { padding: 32px 24px; }
             .footer-inner { grid-template-columns: 1fr; text-align: center; }
-            .footer-links { justify-content: center; }
+            .footer-links { justify-content: center; flex-wrap: wrap; gap: 16px; }
             .type-grid { grid-template-columns: 1fr; }
             .step-label-text { display: none; }
             .floating-devis { display: none; }

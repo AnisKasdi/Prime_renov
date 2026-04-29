@@ -106,7 +106,7 @@ export default function Navbar() {
         </li>
       </ul>
       <button
-        className="nav-toggle"
+        className={`nav-toggle ${menuOpen ? "open" : ""}`}
         id="navToggle"
         aria-label="Menu"
         onClick={() => setMenuOpen(!menuOpen)}
