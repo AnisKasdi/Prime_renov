@@ -59,29 +59,35 @@ async function saveImage(file: File): Promise<string> {
   return `/projects/${filename}`;
 }
 
-export async function addProject(formData: FormData) {
-  const name = formData.get("name") as string;
-  const cat = formData.get("cat") as string;
-  const catFilter = formData.get("catFilter") as string;
-  const year = formData.get("year") as string;
-  const desc = formData.get("desc") as string;
-  const client = formData.get("client") as string;
-  const surface = formData.get("surface") as string;
-  const location = formData.get("location") as string;
-  const status = formData.get("status") as string;
-  const imageFile = formData.get("imageFile") as File;
+export async function addProject(prevState: any, formData: FormData) {
+  try {
+    const name = formData.get("name") as string;
+    const cat = formData.get("cat") as string;
+    const catFilter = formData.get("catFilter") as string;
+    const year = formData.get("year") as string;
+    const desc = formData.get("desc") as string;
+    const client = formData.get("client") as string;
+    const surface = formData.get("surface") as string;
+    const location = formData.get("location") as string;
+    const status = formData.get("status") as string;
+    const imageFile = formData.get("imageFile") as File;
 
-  let image = "/projects/villa_cassini.png";
-  if (imageFile && imageFile.size > 0) {
-    image = await saveImage(imageFile);
+    let image = "/projects/villa_cassini.png";
+    if (imageFile && imageFile.size > 0) {
+      image = await saveImage(imageFile);
+    }
+
+    await prisma.project.create({
+      data: { name, cat, catFilter, year, desc, client, surface, location, status, image },
+    });
+
+    revalidatePath("/admin/projects");
+    revalidatePath("/");
+    return { success: true };
+  } catch (e: any) {
+    console.error("[addProject]", e);
+    return { error: e?.message ?? "Une erreur est survenue lors de l'ajout." };
   }
-
-  await prisma.project.create({
-    data: { name, cat, catFilter, year, desc, client, surface, location, status, image },
-  });
-
-  revalidatePath("/admin/projects");
-  revalidatePath("/");
 }
 
 export async function updateProject(id: number, formData: FormData) {

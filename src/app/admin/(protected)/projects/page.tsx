@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
-import { addProject, deleteProject } from '@/actions/projects';
+import { deleteProject } from '@/actions/projects';
 import DeleteButton from '@/components/DeleteButton';
+import AddProjectForm from '@/components/admin/AddProjectForm';
 
 export const revalidate = 0;
 
@@ -34,63 +35,7 @@ export default async function AdminProjects() {
         </div>
 
         {/* Formulaire d'ajout */}
-        <div style={{ backgroundColor: 'white', padding: '24px', borderRadius: '8px', border: '1px solid var(--gray-200)' }}>
-          <h2 style={{ fontSize: '18px', marginBottom: '16px' }}>Ajouter un Projet</h2>
-          <form action={addProject} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <label style={{ fontSize: '13px', fontWeight: 600 }}>Nom du projet</label>
-              <input name="name" required style={{ padding: '8px', border: '1px solid var(--gray-200)', borderRadius: '4px' }} />
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '13px', fontWeight: 600 }}>Catégorie</label>
-                <input name="cat" required style={{ padding: '8px', border: '1px solid var(--gray-200)', borderRadius: '4px' }} placeholder="ex: Résidentiel" />
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '13px', fontWeight: 600 }}>Filtre (minuscule)</label>
-                <input name="catFilter" required style={{ padding: '8px', border: '1px solid var(--gray-200)', borderRadius: '4px' }} placeholder="ex: residentiel" />
-              </div>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '13px', fontWeight: 600 }}>Année</label>
-                <input name="year" required style={{ padding: '8px', border: '1px solid var(--gray-200)', borderRadius: '4px' }} />
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '13px', fontWeight: 600 }}>Image (Upload)</label>
-                <input type="file" name="imageFile" accept="image/*" required style={{ padding: '8px', border: '1px solid var(--gray-200)', borderRadius: '4px' }} />
-              </div>
-            </div>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <label style={{ fontSize: '13px', fontWeight: 600 }}>Description</label>
-              <textarea name="desc" required rows={4} style={{ padding: '8px', border: '1px solid var(--gray-200)', borderRadius: '4px', resize: 'vertical' }}></textarea>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '13px', fontWeight: 600 }}>Client</label>
-                <input name="client" required style={{ padding: '8px', border: '1px solid var(--gray-200)', borderRadius: '4px' }} />
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '13px', fontWeight: 600 }}>Surface</label>
-                <input name="surface" required style={{ padding: '8px', border: '1px solid var(--gray-200)', borderRadius: '4px' }} />
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '13px', fontWeight: 600 }}>Lieu</label>
-                <input name="location" required style={{ padding: '8px', border: '1px solid var(--gray-200)', borderRadius: '4px' }} />
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '13px', fontWeight: 600 }}>Statut</label>
-                <input name="status" required style={{ padding: '8px', border: '1px solid var(--gray-200)', borderRadius: '4px' }} placeholder="ex: Livré" />
-              </div>
-            </div>
-
-            <button type="submit" style={{ backgroundColor: 'var(--blue-dark)', color: 'white', border: 'none', padding: '12px', borderRadius: '4px', cursor: 'pointer', fontWeight: 600, marginTop: '16px' }}>
-              Ajouter le projet
-            </button>
-          </form>
-        </div>
+        <AddProjectForm />
       </div>
     </div>
   );

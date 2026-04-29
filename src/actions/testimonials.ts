@@ -4,18 +4,24 @@ import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
-export async function addTestimonial(formData: FormData) {
-  await prisma.testimonial.create({
-    data: {
-      name: formData.get('name') as string,
-      role: formData.get('role') as string,
-      text: formData.get('text') as string,
-      rating: parseInt(formData.get('rating') as string),
-      avatar: formData.get('avatar') as string,
-    },
-  });
-  revalidatePath('/');
-  revalidatePath('/admin/testimonials');
+export async function addTestimonial(prevState: any, formData: FormData) {
+  try {
+    await prisma.testimonial.create({
+      data: {
+        name: formData.get('name') as string,
+        role: formData.get('role') as string,
+        text: formData.get('text') as string,
+        rating: parseInt(formData.get('rating') as string),
+        avatar: formData.get('avatar') as string,
+      },
+    });
+    revalidatePath('/');
+    revalidatePath('/admin/testimonials');
+    return { success: true };
+  } catch (e: any) {
+    console.error('[addTestimonial]', e);
+    return { error: e?.message ?? "Une erreur est survenue lors de l'ajout." };
+  }
 }
 
 export async function updateTestimonial(id: number, formData: FormData) {
