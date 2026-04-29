@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
-import { addTestimonial, deleteTestimonial } from '@/actions/testimonials';
+import { deleteTestimonial } from '@/actions/testimonials';
 import DeleteButton from '@/components/DeleteButton';
+import AddTestimonialForm from '@/components/admin/AddTestimonialForm';
 
 export const revalidate = 0;
 
@@ -35,40 +36,7 @@ export default async function AdminTestimonials() {
         </div>
 
         {/* Formulaire d'ajout */}
-        <div style={{ backgroundColor: 'white', padding: '24px', borderRadius: '8px', border: '1px solid var(--gray-200)' }}>
-          <h2 style={{ fontSize: '18px', marginBottom: '16px' }}>Ajouter un Avis</h2>
-          <form action={addTestimonial} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '13px', fontWeight: 600 }}>Nom du client</label>
-                <input name="name" required style={{ padding: '8px', border: '1px solid var(--gray-200)', borderRadius: '4px' }} />
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '13px', fontWeight: 600 }}>Initiales (Avatar)</label>
-                <input name="avatar" required maxLength={2} style={{ padding: '8px', border: '1px solid var(--gray-200)', borderRadius: '4px' }} placeholder="ex: ML" />
-              </div>
-            </div>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <label style={{ fontSize: '13px', fontWeight: 600 }}>Rôle / Projet</label>
-              <input name="role" required style={{ padding: '8px', border: '1px solid var(--gray-200)', borderRadius: '4px' }} placeholder="ex: Projet résidentiel — Paris" />
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <label style={{ fontSize: '13px', fontWeight: 600 }}>Note (1 à 5)</label>
-              <input name="rating" type="number" min="1" max="5" defaultValue="5" required style={{ padding: '8px', border: '1px solid var(--gray-200)', borderRadius: '4px' }} />
-            </div>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <label style={{ fontSize: '13px', fontWeight: 600 }}>Témoignage</label>
-              <textarea name="text" required rows={4} style={{ padding: '8px', border: '1px solid var(--gray-200)', borderRadius: '4px', resize: 'vertical' }}></textarea>
-            </div>
-
-            <button type="submit" style={{ backgroundColor: 'var(--blue-dark)', color: 'white', border: 'none', padding: '12px', borderRadius: '4px', cursor: 'pointer', fontWeight: 600, marginTop: '16px' }}>
-              Ajouter l'avis
-            </button>
-          </form>
-        </div>
+        <AddTestimonialForm />
       </div>
     </div>
   );
