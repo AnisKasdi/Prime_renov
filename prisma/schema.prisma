@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id        Int      @id @default(autoincrement())
+  name      String
+  cat       String
+  year      String
+  catFilter String
+  image     String
+  client    String   @default("Privé")
+  surface   String   @default("Non spécifié")
+  location  String   @default("France")
+  status    String   @default("Livré")
+  desc      String   @default("Une réalisation exemplaire de l'agence Prime Rénov, alliant respect du contexte et vision contemporaine. Chaque matériau a été soigneusement sélectionné pour répondre aux exigences esthétiques et environnementales du client.")
+}
+
+model Testimonial {
+  id      Int      @id @default(autoincrement())
+  name    String
+  role    String
+  text    String
+  rating  Int      @default(5)
+  avatar  String
+}

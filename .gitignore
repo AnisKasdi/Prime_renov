@@ -1,6 +1,4 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
+# ── Dependencies ──────────────────────────────────────────────────────────────
 /node_modules
 /.pnp
 .pnp.*
@@ -10,32 +8,48 @@
 !.yarn/releases
 !.yarn/versions
 
-# testing
-/coverage
-
-# next.js
+# ── Build output ──────────────────────────────────────────────────────────────
 /.next/
 /out/
-
-# production
 /build
 
-# misc
+# ── Testing ───────────────────────────────────────────────────────────────────
+/coverage
+
+# ── Env / secrets — NE JAMAIS committer ───────────────────────────────────────
+# Seul .env.local.example (template sans valeurs réelles) peut être pushé
+.env
+.env.local
+.env.*.local
+# .env.local.example → volontairement NON ignoré (utile pour les collaborateurs)
+
+# ── TypeScript ────────────────────────────────────────────────────────────────
+*.tsbuildinfo
+next-env.d.ts
+
+# ── Prisma ────────────────────────────────────────────────────────────────────
+# Base SQLite locale uniquement — les migrations DOIVENT être commitées
+prisma/dev.db
+prisma/dev.db-journal
+
+# ── Misc ──────────────────────────────────────────────────────────────────────
 .DS_Store
+Thumbs.db
 *.pem
 
-# debug
+# ── Logs ──────────────────────────────────────────────────────────────────────
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
-
-# vercel
+# ── Vercel CLI ────────────────────────────────────────────────────────────────
 .vercel
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# ── Claude Code (session locale) ──────────────────────────────────────────────
+.claude/
+
+# ── Docs internes (inutiles sur Vercel) ───────────────────────────────────────
+documentation.tex
+guide_architecture.tex
+mockup.html
