@@ -42,11 +42,17 @@ async function saveImage(file: File): Promise<string> {
       { method: "POST", body: form }
     );
     const data = await res.json();
-    if (!res.ok) throw new Error(`Cloudinary upload failed: ${data.error?.message}`);
+    if (!res.ok) {
+      console.error("[Cloudinary error]", res.status, data);
+      throw new Error(`Cloudinary upload failed: ${data.error?.message}`);
+    }
     return data.secure_url as string;
   }
 
-  // Fallback : filesystem local (développement / VPS)
+  // Fallback : filesystem local (développement uniquement)
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("Variables Cloudinary manquantes — impossible d'uploader en production.");
+  }
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
   await writeFile(join(process.cwd(), "public", "projects", filename), buffer);
