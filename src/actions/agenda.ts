@@ -2,6 +2,7 @@
 
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
+import { bookingConfirmHtml } from '@/lib/emails';
 
 export async function createSlot(prevState: any, formData: FormData) {
   try {
@@ -81,15 +82,10 @@ async function sendBookingEmails({
   const FROM = process.env.EMAIL_FROM ?? 'onboarding@resend.dev';
   const TO = process.env.EMAIL_TO ?? 'contact@primerenov.fr';
 
-  const fmtDate = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Europe/Paris' }).format(slot.date);
-  const fmtTime = new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Paris' }).format(slot.date);
-
+  const opts = { timeZone: 'Europe/Paris' };
+  const dateStr = new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', ...opts }).format(slot.date);
+  const timeStr = new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit', ...opts }).format(slot.date);
   const platformLabel: Record<string, string> = { teams: 'Microsoft Teams', meet: 'Google Meet', phone: 'Appel téléphonique' };
-  const platform = platformLabel[slot.meetType] ?? slot.meetType;
-
-  const meetRow = slot.meetUrl
-    ? `<tr><td style="padding:8px;font-weight:bold;background:#f5f5f5;width:160px">Lien réunion</td><td style="padding:8px"><a href="${slot.meetUrl}" style="color:#261E1A">${platform} — Rejoindre</a></td></tr>`
-    : `<tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Plateforme</td><td style="padding:8px">${platform} (lien envoyé par email)</td></tr>`;
 
   const send = (to: string, subject: string, html: string) =>
     fetch('https://api.resend.com/emails', {
@@ -98,31 +94,23 @@ async function sendBookingEmails({
       body: JSON.stringify({ from: FROM, to: [to], subject, html }),
     });
 
-  await send(email, `Rendez-vous confirmé — Prime Rénov`, `
-    <div style="font-family:sans-serif;max-width:560px">
-      <h2 style="color:#261E1A;margin-bottom:8px">Rendez-vous confirmé ✓</h2>
-      <p style="color:#5A5A52">Bonjour ${nom}, votre rendez-vous avec Prime Rénov est enregistré.</p>
-      <table style="border-collapse:collapse;width:100%;margin-top:20px">
-        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5;width:160px">Date</td><td style="padding:8px">${fmtDate}</td></tr>
-        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Heure</td><td style="padding:8px">${fmtTime}</td></tr>
-        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Durée</td><td style="padding:8px">${slot.duration} min</td></tr>
-        ${meetRow}
-        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Sujet</td><td style="padding:8px">${sujet || '—'}</td></tr>
-      </table>
-      <p style="color:#9A9A92;font-size:12px;margin-top:24px">Pour annuler ou reporter, répondez simplement à cet email.</p>
-    </div>
-  `);
+  // Confirmation pro au client
+  await send(email, 'Votre rendez-vous est confirmé — Prime Rénov',
+    bookingConfirmHtml({ nom, dateStr, timeStr, duration: slot.duration, meetType: slot.meetType, meetUrl: slot.meetUrl, sujet })
+  );
 
+  // Notification interne admin (simple)
   await send(TO, `Nouveau RDV — ${nom}`, `
-    <div style="font-family:sans-serif;max-width:560px">
+    <div style="font-family:Arial,sans-serif;max-width:560px">
       <h2 style="color:#261E1A">Nouveau rendez-vous réservé</h2>
       <table style="border-collapse:collapse;width:100%">
-        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5;width:160px">Client</td><td style="padding:8px">${nom}</td></tr>
+        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5;width:140px">Client</td><td style="padding:8px">${nom}</td></tr>
         <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Email</td><td style="padding:8px"><a href="mailto:${email}">${email}</a></td></tr>
         <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Téléphone</td><td style="padding:8px">${tel || '—'}</td></tr>
         <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Sujet</td><td style="padding:8px">${sujet || '—'}</td></tr>
-        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Date</td><td style="padding:8px">${fmtDate} à ${fmtTime}</td></tr>
-        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Durée</td><td style="padding:8px">${slot.duration} min</td></tr>
+        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Date</td><td style="padding:8px">${dateStr} à ${timeStr}</td></tr>
+        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Durée</td><td style="padding:8px">${slot.duration} min · ${platformLabel[slot.meetType] ?? slot.meetType}</td></tr>
+        ${slot.meetUrl ? `<tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Lien</td><td style="padding:8px"><a href="${slot.meetUrl}">${slot.meetUrl}</a></td></tr>` : ''}
       </table>
     </div>
   `);

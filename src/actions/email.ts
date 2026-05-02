@@ -1,6 +1,7 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
+import { contactConfirmHtml, devisConfirmHtml } from '@/lib/emails';
 
 async function callResend(payload: object): Promise<{ ok: boolean; error?: string }> {
   const resendKey = process.env.RESEND_API_KEY;
@@ -24,8 +25,6 @@ async function callResend(payload: object): Promise<{ ok: boolean; error?: strin
   return { ok: true };
 }
 
-// Resend n'accepte un from personnalisé que si le domaine est vérifié.
-// Sans domaine vérifié, utiliser onboarding@resend.dev.
 const FROM = process.env.EMAIL_FROM ?? 'onboarding@resend.dev';
 const TO   = process.env.EMAIL_TO   ?? 'contact@primerenov.fr';
 
@@ -40,22 +39,34 @@ export async function sendContact(prevState: any, formData: FormData) {
     data: { source: 'contact', nom, email, msg },
   }).catch(console.error);
 
+  // Notification admin
   const { ok, error } = await callResend({
     from: FROM,
     to: [TO],
     subject: `Message de ${nom} — Contact`,
     reply_to: email,
     html: `
-      <h2 style="color:#1A3A5C">Nouveau message — Formulaire Contact</h2>
+      <h2 style="color:#261E1A">Nouveau message — Formulaire Contact</h2>
       <table style="border-collapse:collapse;width:100%">
-        <tr><td style="padding:8px;font-weight:bold;width:120px">Nom</td><td style="padding:8px">${nom}</td></tr>
-        <tr style="background:#f5f5f5"><td style="padding:8px;font-weight:bold">Email</td><td style="padding:8px"><a href="mailto:${email}">${email}</a></td></tr>
-        <tr><td style="padding:8px;font-weight:bold">Message</td><td style="padding:8px">${msg.replace(/\n/g, '<br>')}</td></tr>
+        <tr><td style="padding:8px;font-weight:bold;width:120px;background:#f5f5f5">Nom</td><td style="padding:8px">${nom}</td></tr>
+        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Email</td><td style="padding:8px"><a href="mailto:${email}">${email}</a></td></tr>
+        <tr><td style="padding:8px;font-weight:bold;background:#f5f5f5">Message</td><td style="padding:8px">${msg.replace(/\n/g, '<br>')}</td></tr>
       </table>
     `,
   });
 
-  return ok ? { success: true } : { error };
+  if (!ok) return { error };
+
+  // Confirmation client
+  await callResend({
+    from: FROM,
+    to: [email],
+    reply_to: TO,
+    subject: 'Votre message a bien été reçu — Prime Rénov',
+    html: contactConfirmHtml(nom, msg),
+  }).catch(console.error);
+
+  return { success: true };
 }
 
 export async function sendDevis(prevState: any, formData: FormData) {
@@ -76,30 +87,42 @@ export async function sendDevis(prevState: any, formData: FormData) {
     data: { source: 'devis', nom, email, tel: tel ?? '', type: type ?? '', desc: desc ?? '', surface: surface ?? '', lieu: lieu ?? '', budget: budget ?? '', delai: delai ?? '', msg: msg ?? '' },
   }).catch(console.error);
 
-  const row = (label: string, value: string) =>
+  const tableRow = (label: string, value: string) =>
     `<tr><td style="padding:8px;font-weight:bold;width:160px;background:#f5f5f5">${label}</td><td style="padding:8px">${value || '—'}</td></tr>`;
 
+  // Notification admin
   const { ok, error } = await callResend({
     from: FROM,
     to: [TO],
     subject: `Demande de devis — ${nom}`,
     reply_to: email,
     html: `
-      <h2 style="color:#1A3A5C">Nouvelle demande de devis</h2>
+      <h2 style="color:#261E1A">Nouvelle demande de devis</h2>
       <table style="border-collapse:collapse;width:100%">
-        ${row('Nom', nom)}
-        ${row('Email', `<a href="mailto:${email}">${email}</a>`)}
-        ${row('Téléphone', tel)}
-        ${row('Type de projet', type)}
-        ${row('Description', desc)}
-        ${row('Surface', surface)}
-        ${row('Localisation', lieu)}
-        ${row('Budget', budget)}
-        ${row('Délai', delai)}
-        ${row('Message', msg ? msg.replace(/\n/g, '<br>') : '')}
+        ${tableRow('Nom', nom)}
+        ${tableRow('Email', `<a href="mailto:${email}">${email}</a>`)}
+        ${tableRow('Téléphone', tel)}
+        ${tableRow('Type de projet', type)}
+        ${tableRow('Description', desc)}
+        ${tableRow('Surface', surface)}
+        ${tableRow('Localisation', lieu)}
+        ${tableRow('Budget', budget)}
+        ${tableRow('Délai', delai)}
+        ${tableRow('Message', msg ? msg.replace(/\n/g, '<br>') : '')}
       </table>
     `,
   });
 
-  return ok ? { success: true } : { error };
+  if (!ok) return { error };
+
+  // Confirmation client
+  await callResend({
+    from: FROM,
+    to: [email],
+    reply_to: TO,
+    subject: 'Votre demande de devis a été reçue — Prime Rénov',
+    html: devisConfirmHtml({ nom, email, tel, type, desc, surface, lieu, budget, delai, msg }),
+  }).catch(console.error);
+
+  return { success: true };
 }
