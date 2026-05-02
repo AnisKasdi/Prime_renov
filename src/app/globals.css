@@ -566,23 +566,24 @@
 
         .filter-btn {
             font-family: var(--font);
-            font-size: 11px;
+            font-size: 14px;
             font-weight: 600;
-            letter-spacing: 0.14em;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
-            color: rgba(255,255,255,0.3);
-            background: none;
-            border: none;
+            color: rgba(255,255,255,0.4);
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 30px;
             cursor: pointer;
-            padding-bottom: 6px;
-            border-bottom: 1px solid transparent;
-            transition: color 0.3s, border-color 0.3s;
+            padding: 10px 20px;
+            transition: all 0.3s var(--ease);
         }
 
         .filter-btn.active,
         .filter-btn:hover {
             color: white;
-            border-bottom-color: var(--green-mid);
+            border-color: var(--accent-sunset);
+            background: rgba(255,255,255,0.05);
         }
 
         .projects-grid {
