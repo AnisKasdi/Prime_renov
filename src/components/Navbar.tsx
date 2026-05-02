@@ -90,6 +90,16 @@ export default function Navbar() {
         </li>
         <li>
           <a
+            href="#rendez-vous"
+            data-nav="rendez-vous"
+            className={activeSection === "rendez-vous" ? "active" : ""}
+            onClick={closeMenu}
+          >
+            Rendez-vous
+          </a>
+        </li>
+        <li>
+          <a
             href="#devis"
             className={`nav-cta ${activeSection === "devis" ? "active" : ""}`}
             data-nav="devis"

@@ -4,11 +4,13 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { logout } from '@/actions/auth';
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ newDemandes }: { newDemandes?: number }) {
   const pathname = usePathname();
 
   const links = [
     { href: '/admin', label: 'Tableau de bord', exact: true },
+    { href: '/admin/demandes', label: 'Demandes & Devis', exact: false, badge: newDemandes },
+    { href: '/admin/agenda', label: 'Agenda', exact: false },
     { href: '/admin/projects', label: 'Gestion des Projets', exact: false },
     { href: '/admin/testimonials', label: 'Gestion des Avis', exact: false },
   ];
@@ -33,7 +35,7 @@ export default function AdminSidebar() {
       </div>
 
       <nav style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '4px', padding: '0 16px' }}>
-        {links.map(({ href, label, exact }) => {
+        {links.map(({ href, label, exact, badge }) => {
           const isActive = exact ? pathname === href : pathname.startsWith(href);
           return (
             <Link
@@ -48,10 +50,25 @@ export default function AdminSidebar() {
                 backgroundColor: isActive ? 'rgba(255,255,255,0.08)' : 'transparent',
                 borderLeft: isActive ? '2px solid var(--green-mid)' : '2px solid transparent',
                 transition: 'all 0.2s',
-                display: 'block',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
               }}
             >
-              {label}
+              <span>{label}</span>
+              {badge != null && badge > 0 && (
+                <span style={{
+                  backgroundColor: 'var(--blue-mid)',
+                  color: 'white',
+                  fontSize: '10px',
+                  fontWeight: 700,
+                  padding: '2px 7px',
+                  borderRadius: '10px',
+                  lineHeight: 1.4,
+                }}>
+                  {badge}
+                </span>
+              )}
             </Link>
           );
         })}

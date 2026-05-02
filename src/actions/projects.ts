@@ -59,6 +59,14 @@ async function saveImage(file: File): Promise<string> {
   return `/projects/${filename}`;
 }
 
+export async function toggleProjectVisibility(id: number) {
+  const project = await prisma.project.findUnique({ where: { id }, select: { visible: true } });
+  if (!project) return;
+  await prisma.project.update({ where: { id }, data: { visible: !project.visible } });
+  revalidatePath("/admin/projects");
+  revalidatePath("/");
+}
+
 export async function addProject(prevState: any, formData: FormData) {
   try {
     const name = formData.get("name") as string;

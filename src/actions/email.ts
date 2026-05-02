@@ -1,5 +1,7 @@
 'use server';
 
+import { prisma } from '@/lib/prisma';
+
 async function callResend(payload: object): Promise<{ ok: boolean; error?: string }> {
   const resendKey = process.env.RESEND_API_KEY;
   if (!resendKey) return { ok: false, error: "Service d'email non configuré." };
@@ -34,6 +36,10 @@ export async function sendContact(prevState: any, formData: FormData) {
 
   if (!nom || !email || !msg) return { error: 'Tous les champs sont requis.' };
 
+  await prisma.devisRequest.create({
+    data: { source: 'contact', nom, email, msg },
+  }).catch(console.error);
+
   const { ok, error } = await callResend({
     from: FROM,
     to: [TO],
@@ -65,6 +71,10 @@ export async function sendDevis(prevState: any, formData: FormData) {
   const msg     = formData.get('msg')     as string;
 
   if (!nom || !email) return { error: "Le nom et l'email sont requis." };
+
+  await prisma.devisRequest.create({
+    data: { source: 'devis', nom, email, tel: tel ?? '', type: type ?? '', desc: desc ?? '', surface: surface ?? '', lieu: lieu ?? '', budget: budget ?? '', delai: delai ?? '', msg: msg ?? '' },
+  }).catch(console.error);
 
   const row = (label: string, value: string) =>
     `<tr><td style="padding:8px;font-weight:bold;width:160px;background:#f5f5f5">${label}</td><td style="padding:8px">${value || '—'}</td></tr>`;

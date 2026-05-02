@@ -19,6 +19,7 @@ model Project {
   location  String   @default("France")
   status    String   @default("Livré")
   desc      String   @default("Une réalisation exemplaire de l'agence Prime Rénov, alliant respect du contexte et vision contemporaine. Chaque matériau a été soigneusement sélectionné pour répondre aux exigences esthétiques et environnementales du client.")
+  visible   Boolean  @default(true)
 }
 
 model Testimonial {
@@ -28,4 +29,42 @@ model Testimonial {
   text    String
   rating  Int      @default(5)
   avatar  String
+}
+
+model TimeSlot {
+  id        Int      @id @default(autoincrement())
+  date      DateTime
+  duration  Int      @default(30)
+  meetType  String   @default("teams")
+  meetUrl   String   @default("")
+  isBooked  Boolean  @default(false)
+  booking   Booking?
+}
+
+model Booking {
+  id        Int      @id @default(autoincrement())
+  slotId    Int      @unique
+  slot      TimeSlot @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  nom       String
+  email     String
+  tel       String   @default("")
+  sujet     String   @default("")
+  createdAt DateTime @default(now())
+}
+
+model DevisRequest {
+  id        Int      @id @default(autoincrement())
+  source    String
+  status    String   @default("Nouveau")
+  createdAt DateTime @default(now())
+  nom       String
+  email     String
+  tel       String   @default("")
+  type      String   @default("")
+  desc      String   @default("")
+  surface   String   @default("")
+  lieu      String   @default("")
+  budget    String   @default("")
+  delai     String   @default("")
+  msg       String   @default("")
 }
