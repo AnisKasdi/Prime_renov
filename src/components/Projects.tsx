@@ -21,7 +21,7 @@ export default function Projects({ projects }: { projects: Project[] }) {
   return (
     <section className="section projects" id="projets">
       <div className="section-header reveal">
-        <span className="section-num label">02</span>
+
         <h2 className="section-title">
           Nos <strong>Projets</strong>
         </h2>

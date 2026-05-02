@@ -2,7 +2,7 @@ export default function Services() {
   return (
     <section className="section services" id="services">
       <div className="section-header reveal">
-        <span className="section-num label">03</span>
+
         <h2 className="section-title">
           Nos <strong>Services</strong>
         </h2>

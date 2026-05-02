@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
+import primeRenov from "../Prime_renov.jpg";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -37,7 +39,9 @@ export default function Navbar() {
   return (
     <nav id="nav" className={scrolled ? "scrolled" : ""}>
       <a href="#accueil" className="nav-logo" onClick={closeMenu}>
-        <div className="nav-logo-mark">P·R</div>
+        <div className="nav-logo-mark" style={{ border: "none", width: "84px", height: "84px" }}>
+          <Image src={primeRenov} alt="Prime Renov Logo" width={84} height={84} style={{ objectFit: "contain" }} />
+        </div>
         <div>
           <span className="nav-logo-name">Prime Rénov</span>
           <span className="nav-logo-sub">Cabinet d'Architecture</span>

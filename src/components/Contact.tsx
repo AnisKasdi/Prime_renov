@@ -16,7 +16,7 @@ export default function Contact() {
   return (
     <section className="section contact" id="contact">
       <div className="section-header reveal">
-        <span className="section-num label">06</span>
+
         <h2 className="section-title">
           Nous <strong>Contacter</strong>
         </h2>

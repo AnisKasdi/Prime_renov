@@ -2,7 +2,7 @@ export default function About() {
   return (
     <section className="section about" id="about">
       <div className="section-header reveal">
-        <span className="section-num label">01</span>
+
         <h2 className="section-title">
           À propos de <strong>l'Atelier</strong>
         </h2>

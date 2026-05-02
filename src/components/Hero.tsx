@@ -1,5 +1,4 @@
 import Image from "next/image";
-import primeRenov from "../Prime_renov.jpg";
 
 export default function Hero() {
   return (
@@ -28,28 +27,7 @@ export default function Hero() {
             </a>
           </div>
         </div>
-        <div className="hero-geo">
-          <div className="geo-wrap">
-            <div className="geo-outer">
-              <div className="geo-corner geo-corner--tl"></div>
-              <div className="geo-corner geo-corner--tr"></div>
-              <div className="geo-corner geo-corner--bl"></div>
-              <div className="geo-corner geo-corner--br"></div>
-              <Image
-                src={primeRenov}
-                alt="Prime Renov Logo"
-                fill
-                priority
-                style={{ objectFit: "contain", padding: "10px" }}
-              />
-            </div>
-            <div className="geo-line-h"></div>
-            <div className="geo-line-v"></div>
-            <div className="geo-dot"></div>
-            <span className="geo-label geo-label--tl">Élévation — 01</span>
-            <span className="geo-label geo-label--br">Ech. 1:100</span>
-          </div>
-        </div>
+
       </div>
       <div className="hero-scroll">
         <div className="scroll-line"></div>

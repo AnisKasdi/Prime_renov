@@ -44,7 +44,7 @@ export default function Testimonials({ testimonials }: { testimonials: Testimoni
   return (
     <section className="section testimonials" id="avis">
       <div className="section-header reveal">
-        <span className="section-num label">04</span>
+
         <h2 className="section-title">
           Ce que disent <strong>nos clients</strong>
         </h2>

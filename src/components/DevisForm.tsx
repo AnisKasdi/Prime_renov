@@ -22,7 +22,7 @@ export default function DevisForm() {
   return (
     <section className="section devis" id="devis">
       <div className="section-header reveal">
-        <span className="section-num label">05</span>
+
         <h2 className="section-title">
           Demande de <strong>Devis</strong>
         </h2>
